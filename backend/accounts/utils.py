@@ -15,6 +15,9 @@ def generate_otp(user, purpose="email_verification"):
         user=user,
         code=code,
         purpose=purpose,
+
+        #by cheacking ezpires_at_gte in view i will confirm , to be honest it actually the expiry value into the expires_at
+        #and i can't be getter than local time , if it is then it is expired
         expires_at=expiry
     )
     return otp

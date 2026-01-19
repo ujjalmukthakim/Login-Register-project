@@ -97,28 +97,50 @@ class RegisterView(APIView):
 
 class VerifyOTPView(APIView):
     def post(self, request):
+        #i am taking email and code from the text user post
         email = request.data.get("email")
         code = request.data.get("otp")
-
+        
+        #by this line i am checking is actullay user exists in my database!
         user = User.objects.filter(email=email).first()
         if not user:
             return Response({"error": "User not found"}, status=404)
-
+        
+        #here i am searching the user in my database which have the code and some other logic
+        #gte means >=
+        #expires_at__gte=timezone.now() is a filter condition used to retrieve records that have not yet expired.
+        #expires_at this my varriable that i named into utils.py\
+        #otp returns an object
         otp = OTP.objects.filter(
             user=user,
             code=code,
             is_used=False,
             expires_at__gte=timezone.now()
         ).first()
+        #giving here first is very important ,it return first object value or none
+        
 
+        #if there is no otp like that then it return from here
         if not otp:
             return Response({"error": "Invalid or expired OTP"}, status=400)
+        
 
+        #if otp exists then i have to do some work here and that i did
+        #otp object er akta variable true kore disi .
+        #important !!
+
+        
         otp.is_used = True
-        otp.save()
 
+        #that means django actually send hole object and it just changed those things that i actullay defined as a filed in database and also that is include inside the object
+        #that's how save function work it's only change the common things along with database fields and the current object fields
+        otp.save()
+        
+        #i activated the account and is_varified and is_varified is my custom varification varriable
         user.is_active = True
         user.is_verified = True
+
+        # after all of that it's important to save user
         user.save()
 
         return Response({"message": "Account activated"})
@@ -128,21 +150,27 @@ class VerifyOTPView(APIView):
 
 
 class ActivateAccountView(APIView):
+    #anyone can go there because the user still not active and it is the way to be actived
     permission_classes = [AllowAny]
+    
+    #here is get method by paste link user can get not post anything
 
     def get(self, request, token):
+        #here i am converting the token to id 
         user_id = verify_activation_token(token)
-
+        
+        # if genarating user_id is failed (it happend if anyone delete one charecter from the link or something else)
         if not user_id:
             return Response(
                 {"error": "Invalid or expired link"},
                 status=400
             )
-
+        #the user id i have right now ,am i have it in my database too?
         user = User.objects.filter(pk=user_id).first()
         if not user:
             return Response({"error": "User not found"}, status=404)
-
+        
+        #if i found it then let give it all permission that it need to be active
         user.is_active = True
         user.is_verified = True
         user.save()
