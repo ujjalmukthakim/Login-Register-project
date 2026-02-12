@@ -1,5 +1,8 @@
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 
+
+
+
 signer = TimestampSigner()
 
 def generate_activation_token(user):

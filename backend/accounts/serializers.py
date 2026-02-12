@@ -3,6 +3,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import User
 
+from django.contrib.auth import authenticate
+from rest_framework import serializers
+
 
 
 #i have to overwrite the defult serializer because i am using email instead of username
@@ -50,3 +53,24 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user, activation_type
     
 #data moves serializer to managers.py
+
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(
+            email=data['email'],
+            password=data['password']
+        )
+
+        if not user:
+            raise serializers.ValidationError("Invalid credentials")
+
+        if not user.is_active:
+            raise serializers.ValidationError("Account not activated")
+
+        data['user'] = user
+        return data

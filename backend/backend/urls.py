@@ -28,7 +28,8 @@ from rest_framework_simplejwt.views import (
 from accounts.views import EmailTokenObtainPairView,ProtectedTestView
 
 
-from accounts.views import RegisterView, VerifyOTPView, ActivateAccountView
+from accounts.views import RegisterView, VerifyOTPView, ActivateAccountView,LoginView,LogoutView,ProfileView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 
 urlpatterns = [
@@ -48,8 +49,16 @@ urlpatterns = [
     path("api/register/", RegisterView.as_view()),
     path("api/verify-otp/", VerifyOTPView.as_view()),
     path("api/activate/<str:token>/", ActivateAccountView.as_view()),
+    path("api/login/", LoginView.as_view()),
+    path("api/logout/",LogoutView.as_view()),
+    path("api/profile/", ProfileView.as_view()),
+
 
 
 
     
+]
+
+urlpatterns += [
+    path("api/token/refresh/", TokenRefreshView.as_view()),
 ]

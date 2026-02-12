@@ -165,3 +165,9 @@ EMAIL_HOST_USER = 'shagormukthakim2143@gmail.com'
 EMAIL_HOST_PASSWORD = 'todjjbsgpqgzoyaz'
 
 TIME_ZONE = 'Asia/Dhaka' 
+
+
+
+INSTALLED_APPS += [
+    'rest_framework_simplejwt.token_blacklist',
+]
