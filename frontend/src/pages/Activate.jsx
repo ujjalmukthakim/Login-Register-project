@@ -27,11 +27,16 @@ export default function Activate() {
     };
 
     activateAccount();
-  }, [token]);
+  }, [navigate, token]);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "80px" }}>
-      <h2>{message}</h2>
-    </div>
+    <main className="auth-page">
+      <section className="auth-shell auth-shell-compact">
+        <div className="auth-card status-card">
+          <p className="auth-kicker">Account activation</p>
+          <h2>{message}</h2>
+        </div>
+      </section>
+    </main>
   );
 }
